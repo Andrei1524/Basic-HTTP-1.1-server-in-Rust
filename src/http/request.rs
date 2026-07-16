@@ -4,11 +4,12 @@ use std::error::Error;
 use std::fmt::{Result as FmtResult, Display, Formatter, Debug};
 use std::str;
 use std::str::Utf8Error;
+use super::{QueryString};
 
 // 'buf -  lifetime for our buffer
 pub struct Request<'buf> {
     path: &'buf str,
-    query_string: Option<&'buf str>,
+    query_string: Option<QueryString<'buf>>,
     method: Method
 }
 
@@ -41,7 +42,7 @@ impl<'buf> TryFrom<&'buf [u8]> for Request<'buf> {
 
         // this will still work, will unwrap automatically the i
         if let Some(i) = path.find('?') {
-            query_string = Some(&path[i + 1..]); // we add 1 because we dont want the ? to be captured, and + 1 is +1 byte (? is on byte in size)
+            query_string = Some(QueryString::from(&path[i + 1..])); // we add 1 because we dont want the ? to be captured, and + 1 is +1 byte (? is on byte in size)
             path = &path[..i];
         }
 

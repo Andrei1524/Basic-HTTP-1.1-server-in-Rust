@@ -1,4 +1,4 @@
-use std::{num::ParseIntError, str::FromStr};
+use std::{str::FromStr};
 
 pub enum Method {
     GET,

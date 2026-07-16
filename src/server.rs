@@ -1,8 +1,7 @@
 use std::{io::Read, net::TcpListener};
 
 use std::convert::TryFrom;
-use std::convert::TryInto ;
-use crate::http::{Request, request}; // with crate we can access the root project modules (see main.rs)
+use crate::http::{Request}; // with crate we can access the root project modules (see main.rs)
 
 pub struct Server {
     addr: String,
