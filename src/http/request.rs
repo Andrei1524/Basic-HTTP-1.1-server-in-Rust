@@ -7,6 +7,8 @@ use std::str::Utf8Error;
 use super::{QueryString};
 
 // 'buf -  lifetime for our buffer
+// we derive so we can easily debug
+#[derive(Debug)]
 pub struct Request<'buf> {
     path: &'buf str,
     query_string: Option<QueryString<'buf>>,

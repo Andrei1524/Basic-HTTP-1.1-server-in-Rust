@@ -2,7 +2,6 @@
 
 use server::Server;
 
-
 mod server;
 mod http;
 
