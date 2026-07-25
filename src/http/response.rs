@@ -1,4 +1,4 @@
-use std::{fmt::{Display, Formatter, Result as FmtResult}, net::TcpStream};
+use std::net::TcpStream;
 use std::io::{Write, Result as IoResult};
 use super::StatusCode;
 
@@ -13,7 +13,8 @@ impl Response {
         Response { status_code, body }
     }
 
-    pub fn send(&self, stream: &mut TcpStream) -> IoResult<()> {
+    // impl Write - means this func accepts any paramenter that implements the Write trait
+    pub fn send(&self, stream: &mut impl Write) -> IoResult<()> {
         let body = match &self.body {
             Some(b) => b,
             None => ""

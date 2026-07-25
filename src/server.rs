@@ -1,10 +1,19 @@
 use std::{io::{Read, Write}, net::TcpListener};
 
 use std::convert::TryFrom;
-use crate::http::{Request, Response, StatusCode}; // with crate we can access the root project modules (see main.rs)
+use crate::http::{ParseError, Request, Response, StatusCode}; // with crate we can access the root project modules (see main.rs)
 
 pub struct Server {
     addr: String,
+}
+
+pub trait Handler {
+    fn handle_request(&mut self, request: &Request) -> Response;
+
+    fn handle_bad_request(&mut self, e: &ParseError) -> Response {
+        println!("Failed to parse request: {}", e);
+        Response::new(StatusCode::BadRequest, None)
+    }
 }
 
 impl Server {
@@ -14,7 +23,7 @@ impl Server {
         }
     }
 
-    pub fn run(self) {
+    pub fn run(self, mut handler: impl  Handler) {
         println!("Listening on {}", self.addr);
 
         let listener = TcpListener::bind(&self.addr).unwrap();
@@ -29,12 +38,10 @@ impl Server {
 
                           let response = match Request::try_from(&buffer[..]) {
                               Ok(request) => {
-                                  dbg!(request);
-                                  Response::new(StatusCode::Ok, Some("<h1>It works</1>".to_string()))
+                                  handler.handle_request(&request)
                               },
                               Err(e) => {
-                                  println!("Failed to parse a req: {}", e);
-                                  Response::new(StatusCode::BadRequest, None)
+                                  handler.handle_bad_request(&e)
                               }
                           };
 
